@@ -3,7 +3,6 @@ name: Trigger Parent Repo
 on:
   push:
     branches:
-      - master
       - geodude
 
 jobs:
