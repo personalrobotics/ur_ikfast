@@ -1,21 +1,23 @@
-# setup.py
-from setuptools import setup, find_packages, Extension
+from setuptools import setup, Extension
 from Cython.Build import cythonize
+# If you need NumPy headers, uncomment these two lines:
+# import numpy
+# include_dirs = [numpy.get_include()]
+include_dirs = []
+
+extensions = [
+    # Put the built module inside the 'ur5e' package (import as 'from ur5e import ur5e_ikfast')
+    Extension(
+        name="ur5e.ur5e_ikfast",
+        sources=["ur5e/ur5e_ikfast.pyx", "ur5e/ikfast_wrapper.cpp"],
+        language="c++",
+        include_dirs=include_dirs,
+        libraries=["lapack"],   # adjust/remove if not needed on your system
+        # library_dirs=[],      # e.g., ['/usr/lib/x86_64-linux-gnu']
+        # extra_compile_args=["-O3"],
+    ),
+]
 
 setup(
-    name='ur_ikfast',
-    version='0.1.0',
-    license='MIT',
-    long_description=open('README.md').read(),
-    packages=find_packages(),          # find your ur5e, ur3, etc. dirs
-    ext_modules=cythonize([
-        Extension(
-            "ur5e_ikfast",
-            ["ur5e/ur5e_ikfast.pyx", "ur5e/ikfast_wrapper.cpp"],
-            language="c++",
-            libraries=["lapack"],
-        )
-    ], language_level="3"),
-    zip_safe=False,
+    ext_modules=cythonize(extensions, language_level="3"),
 )
-
